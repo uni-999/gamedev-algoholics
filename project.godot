@@ -11,8 +11,18 @@ config_version=5
 [application]
 
 config/name="Bookworms"
+run/main_scene="uid://j1ws4dvl6ivo"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://assets/icon.svg"
+
+[display]
+
+window/size/viewport_width=800
+window/size/viewport_height=600
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
 
 [physics]
 
