@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://bxm6ehap8rqk"]
+
+[ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="1_c6bgd"]
+[ext_resource type="Script" uid="uid://mbqtjtqbwb2a" path="res://scripts/typing_display.gd" id="1_q0tpt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y53od"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.2901961, 0.2901961, 0.2901961, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="TypingDisplay" type="Control" unique_id=257179574]
+layout_mode = 3
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.8
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q0tpt")
+
+[node name="TextPanel" type="PanelContainer" parent="." unique_id=1700615149]
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_y53od")
+
+[node name="MarginContainer" type="MarginContainer" parent="TextPanel" unique_id=573285225]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="TargetText" type="RichTextLabel" parent="TextPanel/MarginContainer" unique_id=236695970]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("1_c6bgd")
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+bbcode_enabled = true
+text = "The quick brown fox jumps over the lazy dog. This is a sample text for typing."
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,0 +1,154 @@
+[gd_scene format=3 uid="uid://vtcfb43nq8cj"]
+
+[ext_resource type="Script" uid="uid://mm5xxrgkiupn" path="res://scripts/virtual_keyboard.gd" id="1_4owuj"]
+[ext_resource type="PackedScene" uid="uid://bjmhi4qmpmnvm" path="res://scenes/ui/key.tscn" id="1_fd3cp"]
+
+[node name="VirtualKeyboard" type="Control" unique_id=942552911]
+layout_mode = 3
+anchors_preset = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_4owuj")
+
+[node name="KeyboardRows" type="VBoxContainer" parent="." unique_id=1375199552]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="Row1" type="HBoxContainer" parent="KeyboardRows" unique_id=934392768]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Key" parent="KeyboardRows/Row1" unique_id=1701704324 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key2" parent="KeyboardRows/Row1" unique_id=1473720465 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key3" parent="KeyboardRows/Row1" unique_id=1697634034 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key4" parent="KeyboardRows/Row1" unique_id=1219066422 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key5" parent="KeyboardRows/Row1" unique_id=804026885 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key6" parent="KeyboardRows/Row1" unique_id=854949859 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key7" parent="KeyboardRows/Row1" unique_id=804072484 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key8" parent="KeyboardRows/Row1" unique_id=1635906172 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key9" parent="KeyboardRows/Row1" unique_id=1861897216 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key10" parent="KeyboardRows/Row1" unique_id=1944434961 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key11" parent="KeyboardRows/Row1" unique_id=1178079166 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Row2" type="HBoxContainer" parent="KeyboardRows" unique_id=1688283325]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Key" parent="KeyboardRows/Row2" unique_id=426805554 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key2" parent="KeyboardRows/Row2" unique_id=179438538 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key3" parent="KeyboardRows/Row2" unique_id=173742407 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key4" parent="KeyboardRows/Row2" unique_id=1677687129 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key5" parent="KeyboardRows/Row2" unique_id=1939086166 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key6" parent="KeyboardRows/Row2" unique_id=1923395148 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key7" parent="KeyboardRows/Row2" unique_id=841473004 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key8" parent="KeyboardRows/Row2" unique_id=2034489642 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key9" parent="KeyboardRows/Row2" unique_id=219572489 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key10" parent="KeyboardRows/Row2" unique_id=1615093299 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key11" parent="KeyboardRows/Row2" unique_id=1691492640 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Row3" type="HBoxContainer" parent="KeyboardRows" unique_id=130134901]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Key" parent="KeyboardRows/Row3" unique_id=1542552548 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key2" parent="KeyboardRows/Row3" unique_id=641754989 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key3" parent="KeyboardRows/Row3" unique_id=1311604970 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key4" parent="KeyboardRows/Row3" unique_id=258223345 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key5" parent="KeyboardRows/Row3" unique_id=1319661205 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key6" parent="KeyboardRows/Row3" unique_id=54149054 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key7" parent="KeyboardRows/Row3" unique_id=577996720 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key8" parent="KeyboardRows/Row3" unique_id=495907588 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key9" parent="KeyboardRows/Row3" unique_id=562645805 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key10" parent="KeyboardRows/Row3" unique_id=867236702 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Key11" parent="KeyboardRows/Row3" unique_id=1596928057 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="Row4" type="HBoxContainer" parent="KeyboardRows" unique_id=2056638648]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Key" parent="KeyboardRows/Row4" unique_id=1218571669 instance=ExtResource("1_fd3cp")]
+layout_mode = 2
+
+[node name="ShiftTimer" type="Timer" parent="." unique_id=1231655260]
