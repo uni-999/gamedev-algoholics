@@ -6,7 +6,8 @@ extends Node2D
 @onready var apple_layer = $Tilemap/Apples
 @onready var top_snake = $TopSnake
 @onready var bottom_snake = $BottomSnake
-@onready var camera = $Camera2D
+@onready var camera = $"../Camera2D"
+@onready var music = $Music
 
 # Tile configuration
 var tile_size: int = 16
@@ -45,11 +46,12 @@ var apple_positions_bottom: Array = []
 func _ready():
 	calculate_original_dimensions()
 	setup_camera()
+	play_music()
 	# Set snake positions
 	if top_snake:
-		top_snake.position = Vector2(0, top_snake_y)
+		top_snake.position = Vector2(32, top_snake_y)
 	if bottom_snake:
-		bottom_snake.position = Vector2(0, bottom_snake_y)
+		bottom_snake.position = Vector2(32, bottom_snake_y)
 	
 	is_ready = true
 
@@ -57,11 +59,8 @@ func _process(delta):
 	# Camera follows bottom snake (player)
 	if bottom_snake and camera:
 		var head_pos = bottom_snake.get_head_position()
-		# Position camera so player is closer to right edge
-		var target_x = head_pos.x - camera_offset.x
-		var current_pos = camera.position
-		var new_x = lerp(current_pos.x, target_x, camera_follow_speed * delta)
-		camera.position = Vector2(new_x, current_pos.y)
+		# Вариант 1: Мгновенное следование (простое)
+		camera.position.x = head_pos.x + 64
 
 func calculate_original_dimensions():
 	var max_x = 0
@@ -84,7 +83,7 @@ func setup_camera():
 	
 	# Set camera limits
 	camera.limit_left = 0
-	camera.limit_right = 5000  # Large initial limit
+	camera.limit_right = 10000  # Large initial limit
 	camera.limit_top = 0
 	camera.limit_bottom = original_height * tile_size
 	
@@ -178,6 +177,10 @@ func duplicate_layer(layer: TileMapLayer, start_x: int):
 		if source_id != -1:
 			var new_cell = Vector2i(cell.x + start_x, cell.y)
 			layer.set_cell(new_cell, source_id, atlas_coords, alternative_tile)
+
+func play_music():
+	if(is_ready):
+		music.play()
 
 func clear_apples():
 	if apple_layer:

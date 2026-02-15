@@ -1,18 +1,18 @@
 extends Control
 
 # Node references
-@onready var stats_panel = $GameContainer/StatsPanel
-@onready var typing_display = $GameContainer/TypingDisplay
+@onready var stats_panel = $CanvasLayer/GameContainer/StatsPanel
+@onready var typing_display = $CanvasLayer/GameContainer/TypingDisplay
 @onready var road = $Road
-@onready var virtual_keyboard = $GameContainer/VirtualKeyboard
-@onready var text_selector = $ControlButtons/TextSelector
-@onready var start_button = $ControlButtons/StartButton
-@onready var control_buttons = $ControlButtons
-@onready var control_buttons_bg = $ControlButtonsBackground
-@onready var finished_buttons = $FinishedButtons
-@onready var score_label = $FinishedButtons/ScoreLabel
-@onready var restart_button = $FinishedButtons/RestartButton
-
+@onready var virtual_keyboard = $CanvasLayer/GameContainer/VirtualKeyboard
+@onready var text_selector = $CanvasLayer/ControlButtons/TextSelector
+@onready var start_button = $CanvasLayer/ControlButtons/StartButton
+@onready var control_buttons = $CanvasLayer/ControlButtons
+@onready var control_buttons_bg = $CanvasLayer/ControlButtonsBackground
+@onready var finished_buttons = $CanvasLayer/FinishedButtons
+@onready var score_label = $CanvasLayer/FinishedButtons/ScoreLabel
+@onready var restart_button = $CanvasLayer/FinishedButtons/RestartButton
+@onready var music = $Music
 # Game state
 var current_text: String = ""
 var current_text_with_spaces: String = ""  # Keep spaces for display
@@ -77,10 +77,7 @@ func _input(event):
 	if event.pressed and not event.echo:
 		var key_unicode = event.unicode
 		
-		if event.keycode == KEY_BACKSPACE:
-			_on_key_pressed("Backspace", false)
-			highlight_virtual_key("Backspace")
-		elif event.keycode == KEY_SPACE:
+		if event.keycode == KEY_SPACE:
 			_on_key_pressed(" ", false)
 			highlight_virtual_key("Space")
 		elif key_unicode >= 97 and key_unicode <= 122:
@@ -98,6 +95,7 @@ func highlight_virtual_key(key: String):
 
 func _process(delta):
 	if not is_typing or game_completed:
+		music.stop()
 		return
 	
 	if timer_running and start_time > 0:
@@ -107,7 +105,7 @@ func _on_start_pressed():
 	hide_control_buttons()
 	hide_finished_buttons()
 	show_road_layers()
-	
+	music.play()
 	reset_game()
 	start_time = Time.get_ticks_msec()
 	timer_running = true

@@ -38,9 +38,9 @@ func _process(delta):
 		move_timer += delta
 		while move_timer >= move_speed and current_index < get_parent().get_text_length():
 			move_timer -= move_speed
-			move_forward()
 			# Emit signal for bot eating apple
-			apple_eaten.emit(current_index - 1)
+			$"..".eat_apple("top", current_index)
+			apple_eaten.emit("top", current_index - 1)
 
 func move_forward():
 	if current_index >= get_parent().get_text_length():
@@ -51,12 +51,17 @@ func move_forward():
 		segments[i].position = segments[i - 1].position
 		segment_positions[i] = segments[i].position
 	
+		
 	# Move head forward
 	segments[0].position.x += 16
+	
 	segment_positions[0] = segments[0].position
 	
+#	if snake_type == SnakeType.PLAYER:
+#		print(get_head_position())
 	current_index += 1
-	print("Bot moved to index: ", current_index)
+	
+	#print("Bot moved to index: ", current_index)
 
 func reset_position(start_x: float):
 	# Reset snake with head at start_x, body extending left
@@ -72,7 +77,6 @@ func eat_apple():
 	modulate = Color(1, 1, 0.5)
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color(1, 1, 1), 0.2)
-	
 	move_forward()
 	apple_eaten.emit(current_index - 1)
 

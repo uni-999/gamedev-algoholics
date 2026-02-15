@@ -6,8 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://vtcfb43nq8cj" path="res://scenes/ui/virtual_keyboard.tscn" id="2_nbrst"]
 [ext_resource type="PackedScene" uid="uid://csy51rmbmptjf" path="res://scenes/road.tscn" id="3_5mgl0"]
 [ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="5_lakwo"]
+[ext_resource type="AudioStream" uid="uid://1jk13ao21lrf" path="res://assets/405220__shortiefoeva2__playground-runaround.mp3" id="7_xafdj"]
+[ext_resource type="AudioStream" uid="uid://cldpwerfy4op1" path="res://assets/253887__themusicalnomad__positive_beeps.wav" id="8_fdj2k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mgl0"]
+bg_color = Color(0.45882353, 0.45882353, 0.45882353, 0.68235296)
 
 [node name="Game" type="Control" unique_id=1223640727]
 layout_mode = 3
@@ -20,29 +23,31 @@ script = ExtResource("1_bfhks")
 
 [node name="Road" parent="." unique_id=2132394827 instance=ExtResource("3_5mgl0")]
 
-[node name="GameContainer" type="Control" parent="." unique_id=674176411]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2098200673]
+
+[node name="GameContainer" type="Control" parent="CanvasLayer" unique_id=674176411]
 z_index = 5
-layout_mode = 1
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="StatsPanel" parent="GameContainer" unique_id=761449015 instance=ExtResource("2_kfd0b")]
+[node name="StatsPanel" parent="CanvasLayer/GameContainer" unique_id=761449015 instance=ExtResource("2_kfd0b")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.01
 anchor_bottom = 0.01
 
-[node name="TypingDisplay" parent="GameContainer" unique_id=257179574 instance=ExtResource("1_21b1b")]
+[node name="TypingDisplay" parent="CanvasLayer/GameContainer" unique_id=257179574 instance=ExtResource("1_21b1b")]
 z_as_relative = false
 layout_mode = 1
 anchor_top = 0.15
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="VirtualKeyboard" parent="GameContainer" unique_id=942552911 instance=ExtResource("2_nbrst")]
+[node name="VirtualKeyboard" parent="CanvasLayer/GameContainer" unique_id=942552911 instance=ExtResource("2_nbrst")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.8
@@ -50,20 +55,8 @@ anchor_right = 1.0
 anchor_bottom = 0.98
 offset_bottom = 3.0
 
-[node name="ControlButtonsBackground" type="ColorRect" parent="." unique_id=827763883]
-visible = false
+[node name="FinishedButtons" type="HBoxContainer" parent="CanvasLayer" unique_id=1860671962]
 z_index = 10
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="FinishedButtons" type="HBoxContainer" parent="." unique_id=1860671962]
-visible = false
-z_index = 10
-layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -71,15 +64,17 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="ScoreLabel" type="Label" parent="FinishedButtons" unique_id=1174160476]
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/FinishedButtons" unique_id=1174160476]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
 theme_override_styles/normal = SubResource("StyleBoxFlat_5mgl0")
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="RestartButton" type="Button" parent="FinishedButtons" unique_id=79225561]
+[node name="RestartButton" type="Button" parent="CanvasLayer/FinishedButtons" unique_id=79225561]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -87,10 +82,16 @@ size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
 text = "START"
 
-[node name="ControlButtons" type="HBoxContainer" parent="." unique_id=842579292]
-visible = false
+[node name="ControlButtonsBackground" type="ColorRect" parent="CanvasLayer" unique_id=827763883]
 z_index = 10
-layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ControlButtons" type="HBoxContainer" parent="CanvasLayer" unique_id=842579292]
+z_index = 10
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -98,17 +99,27 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="TextSelector" type="OptionButton" parent="ControlButtons" unique_id=380002696]
+[node name="TextSelector" type="OptionButton" parent="CanvasLayer/ControlButtons" unique_id=380002696]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
 
-[node name="StartButton" type="Button" parent="ControlButtons" unique_id=1102167122]
+[node name="StartButton" type="Button" parent="CanvasLayer/ControlButtons" unique_id=1102167122]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
 text = "START"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=51171050]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=1978342947]
+stream = ExtResource("7_xafdj")
+
+[node name="Finish" type="AudioStreamPlayer" parent="." unique_id=1190055324]
+stream = ExtResource("8_fdj2k")
