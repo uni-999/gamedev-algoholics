@@ -31,12 +31,12 @@ func update_wpm(wpm: int):
 func update_mistakes(count: int):
 	if mistakes_label:
 		if mistakes_label is Label:
-			mistakes_label.text = "Mistakes: " + str(count)
+			mistakes_label.text = "MISTAKES: " + str(count)
 		else:
 			# If it's not a Label, try to find a Label child
 			var label = find_label_child(mistakes_label)
 			if label:
-				label.text = "Mistakes: " + str(count)
+				label.text = "MISTAKES: " + str(count)
 			else:
 				print("Warning: Could not find Mistakes Label")
 	else:

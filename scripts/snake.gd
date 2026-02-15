@@ -8,6 +8,8 @@ enum SnakeType { PLAYER, BOT }
 @export var snake_color: Color = Color(1, 1, 1)
 @export var move_speed: float = 0.3  # Seconds per move (for bot)
 @onready var eat_sound = $Eat
+@onready var texture_blue = load("res://assets/enemy.png")
+@onready var animation_player = $AnimationPlayer
 
 var snake_length: int = 4
 var current_index: int = 0  # Current apple index
@@ -24,6 +26,12 @@ var move_timer: float = 0.0
 ]
 
 func _ready():
+	if snake_type == SnakeType.PLAYER:
+		$Head.texture = texture_blue
+		$Body1.texture = texture_blue
+		$Body2.texture = texture_blue
+		$Body3.texture = texture_blue
+		$Tail.texture = texture_blue
 	# Set initial positions (head at 0,0, body extending left)
 	for i in range(segments.size()):
 		segments[i].position.x = -i * 16  # Each segment 16px left of previous
@@ -33,6 +41,7 @@ func _ready():
 	for segment in segments:
 		if segment is Sprite2D:
 			segment.modulate = snake_color
+	$Head.frame = 8
 
 func _process(delta):
 	if snake_type == SnakeType.BOT:
@@ -76,6 +85,7 @@ func reset_position(start_x: float):
 func eat_apple():
 	# Visual feedback
 	modulate = Color(1, 1, 0.5)
+	animation_player.play("eating")
 	var tween = create_tween()
 	tween.tween_property(self, "modulate", Color(1, 1, 1), 0.2)
 	move_forward()
