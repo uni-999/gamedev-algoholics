@@ -10,7 +10,7 @@
 [ext_resource type="AudioStream" uid="uid://cldpwerfy4op1" path="res://assets/253887__themusicalnomad__positive_beeps.wav" id="8_fdj2k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mgl0"]
-bg_color = Color(0.45882353, 0.45882353, 0.45882353, 0.68235296)
+bg_color = Color(0.45882353, 0.45882353, 0.45882353, 0.78431374)
 
 [node name="Game" type="Control" unique_id=1223640727]
 layout_mode = 3

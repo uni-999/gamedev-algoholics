@@ -7,6 +7,7 @@ enum SnakeType { PLAYER, BOT }
 @export var snake_type: SnakeType = SnakeType.PLAYER
 @export var snake_color: Color = Color(1, 1, 1)
 @export var move_speed: float = 0.3  # Seconds per move (for bot)
+@onready var eat_sound = $Eat
 
 var snake_length: int = 4
 var current_index: int = 0  # Current apple index
@@ -79,6 +80,8 @@ func eat_apple():
 	tween.tween_property(self, "modulate", Color(1, 1, 1), 0.2)
 	move_forward()
 	apple_eaten.emit(current_index - 1)
+	if snake_type == SnakeType.PLAYER:
+		eat_sound.play()
 
 func get_head_position() -> Vector2:
 	return segments[0].position

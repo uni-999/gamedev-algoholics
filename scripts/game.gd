@@ -13,6 +13,7 @@ extends Control
 @onready var score_label = $CanvasLayer/FinishedButtons/ScoreLabel
 @onready var restart_button = $CanvasLayer/FinishedButtons/RestartButton
 @onready var music = $Music
+@onready var finish_sound = $Finish
 # Game state
 var current_text: String = ""
 var current_text_with_spaces: String = ""  # Keep spaces for display
@@ -223,7 +224,7 @@ func complete_typing():
 	is_typing = false
 	timer_running = false
 	game_completed = true
-	
+	finish_sound.play()
 	if virtual_keyboard and virtual_keyboard.has_method("enable_keyboard"):
 		virtual_keyboard.enable_keyboard(false)
 	
