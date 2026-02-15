@@ -23,8 +23,8 @@ alignment = 1
 
 [node name="Row1" type="HBoxContainer" parent="KeyboardRows" unique_id=934392768]
 layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 4
 alignment = 1
 
@@ -63,8 +63,8 @@ layout_mode = 2
 
 [node name="Row2" type="HBoxContainer" parent="KeyboardRows" unique_id=1688283325]
 layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 4
 alignment = 1
 
@@ -103,8 +103,8 @@ layout_mode = 2
 
 [node name="Row3" type="HBoxContainer" parent="KeyboardRows" unique_id=130134901]
 layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 4
 alignment = 1
 
@@ -143,8 +143,8 @@ layout_mode = 2
 
 [node name="Row4" type="HBoxContainer" parent="KeyboardRows" unique_id=2056638648]
 layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 4
 alignment = 1
 
