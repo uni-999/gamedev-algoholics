@@ -1,154 +1,112 @@
 [gd_scene format=3 uid="uid://vtcfb43nq8cj"]
 
-[ext_resource type="Script" uid="uid://mm5xxrgkiupn" path="res://scripts/virtual_keyboard.gd" id="1_4owuj"]
-[ext_resource type="PackedScene" uid="uid://bjmhi4qmpmnvm" path="res://scenes/ui/key.tscn" id="1_fd3cp"]
+[ext_resource type="Script" uid="uid://cdx41hdly7byf" path="res://scripts/stats_panel.gd" id="1_4owuj"]
+[ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="2_b471s"]
 
-[node name="VirtualKeyboard" type="Control" unique_id=942552911]
+[sub_resource type="Theme" id="Theme_eeejb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eeejb"]
+bg_color = Color(1, 1, 1, 0.73333335)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4509804, 0.4509804, 0.5019608, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pc8i4"]
+bg_color = Color(0.2509804, 0.2509804, 0.3019608, 1)
+border_color = Color(0.4509804, 0.4509804, 0.5019608, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="StatsPanel" type="Control" unique_id=761449015]
+custom_minimum_size = Vector2(800, 20)
 layout_mode = 3
 anchors_preset = 0
-size_flags_horizontal = 4
-size_flags_vertical = 4
+offset_right = 800.0
+offset_bottom = 50.0
+size_flags_vertical = 0
 script = ExtResource("1_4owuj")
 
-[node name="KeyboardRows" type="VBoxContainer" parent="." unique_id=1375199552]
+[node name="MainContainer" type="VBoxContainer" parent="." unique_id=494983119]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -100.0
 grow_horizontal = 2
-grow_vertical = 0
-alignment = 1
-
-[node name="Row1" type="HBoxContainer" parent="KeyboardRows" unique_id=934392768]
-layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
+grow_vertical = 2
 theme_override_constants/separation = 4
 alignment = 1
 
-[node name="Key" parent="KeyboardRows/Row1" unique_id=1701704324 instance=ExtResource("1_fd3cp")]
+[node name="TopRow" type="HBoxContainer" parent="MainContainer" unique_id=382310029]
 layout_mode = 2
-
-[node name="Key2" parent="KeyboardRows/Row1" unique_id=1473720465 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key3" parent="KeyboardRows/Row1" unique_id=1697634034 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key4" parent="KeyboardRows/Row1" unique_id=1219066422 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key5" parent="KeyboardRows/Row1" unique_id=804026885 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key6" parent="KeyboardRows/Row1" unique_id=854949859 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key7" parent="KeyboardRows/Row1" unique_id=804072484 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key8" parent="KeyboardRows/Row1" unique_id=1635906172 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key9" parent="KeyboardRows/Row1" unique_id=1861897216 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key10" parent="KeyboardRows/Row1" unique_id=1944434961 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key11" parent="KeyboardRows/Row1" unique_id=1178079166 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Row2" type="HBoxContainer" parent="KeyboardRows" unique_id=1688283325]
-layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
-theme_override_constants/separation = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 60
 alignment = 1
 
-[node name="Key" parent="KeyboardRows/Row2" unique_id=426805554 instance=ExtResource("1_fd3cp")]
+[node name="WPMContainer" type="HBoxContainer" parent="MainContainer/TopRow" unique_id=963093206]
 layout_mode = 2
-
-[node name="Key2" parent="KeyboardRows/Row2" unique_id=179438538 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key3" parent="KeyboardRows/Row2" unique_id=173742407 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key4" parent="KeyboardRows/Row2" unique_id=1677687129 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key5" parent="KeyboardRows/Row2" unique_id=1939086166 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key6" parent="KeyboardRows/Row2" unique_id=1923395148 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key7" parent="KeyboardRows/Row2" unique_id=841473004 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key8" parent="KeyboardRows/Row2" unique_id=2034489642 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key9" parent="KeyboardRows/Row2" unique_id=219572489 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key10" parent="KeyboardRows/Row2" unique_id=1615093299 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key11" parent="KeyboardRows/Row2" unique_id=1691492640 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Row3" type="HBoxContainer" parent="KeyboardRows" unique_id=130134901]
-layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
-theme_override_constants/separation = 4
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = SubResource("Theme_eeejb")
 alignment = 1
 
-[node name="Key" parent="KeyboardRows/Row3" unique_id=1542552548 instance=ExtResource("1_fd3cp")]
+[node name="WPMlabel" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=689318204]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_b471s")
+text = "SPEED:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Key2" parent="KeyboardRows/Row3" unique_id=641754989 instance=ExtResource("1_fd3cp")]
+[node name="WPMValue" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=897990601]
+visible = false
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_b471s")
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Key3" parent="KeyboardRows/Row3" unique_id=1311604970 instance=ExtResource("1_fd3cp")]
+[node name="MistakesContainer" type="HBoxContainer" parent="MainContainer/TopRow" unique_id=309595098]
 layout_mode = 2
-
-[node name="Key4" parent="KeyboardRows/Row3" unique_id=258223345 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key5" parent="KeyboardRows/Row3" unique_id=1319661205 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key6" parent="KeyboardRows/Row3" unique_id=54149054 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key7" parent="KeyboardRows/Row3" unique_id=577996720 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key8" parent="KeyboardRows/Row3" unique_id=495907588 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key9" parent="KeyboardRows/Row3" unique_id=562645805 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key10" parent="KeyboardRows/Row3" unique_id=867236702 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Key11" parent="KeyboardRows/Row3" unique_id=1596928057 instance=ExtResource("1_fd3cp")]
-layout_mode = 2
-
-[node name="Row4" type="HBoxContainer" parent="KeyboardRows" unique_id=2056638648]
-layout_mode = 2
-size_flags_horizontal = 5
-size_flags_vertical = 0
-theme_override_constants/separation = 4
+size_flags_horizontal = 4
+size_flags_vertical = 4
 alignment = 1
 
-[node name="Key" parent="KeyboardRows/Row4" unique_id=1218571669 instance=ExtResource("1_fd3cp")]
+[node name="Mistakeslabel" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=11041179]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_b471s")
+text = "MISTAKES:"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ShiftTimer" type="Timer" parent="." unique_id=1231655260]
+[node name="MistakesValue" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=1056204276]
+visible = false
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_b471s")
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MainContainer" unique_id=1133155190]
+custom_minimum_size = Vector2(300, 16)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("2_b471s")
+theme_override_styles/background = SubResource("StyleBoxFlat_eeejb")
+theme_override_styles/fill = SubResource("StyleBoxFlat_pc8i4")
+show_percentage = false

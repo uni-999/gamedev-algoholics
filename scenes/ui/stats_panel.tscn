@@ -3,18 +3,30 @@
 [ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="1_64xbg"]
 [ext_resource type="Script" uid="uid://cdx41hdly7byf" path="res://scripts/stats_panel.gd" id="1_j00bn"]
 
+[sub_resource type="Theme" id="Theme_eeejb"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eeejb"]
-bg_color = Color(0.22745098, 0.22745098, 0.22745098, 1)
+bg_color = Color(1, 1, 1, 0.73333335)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4509804, 0.4509804, 0.5019608, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pc8i4"]
-bg_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+bg_color = Color(0.2509804, 0.2509804, 0.3019608, 1)
+border_color = Color(0.4509804, 0.4509804, 0.5019608, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="StatsPanel" type="Control" unique_id=761449015]
-custom_minimum_size = Vector2(800, 50)
+custom_minimum_size = Vector2(800, 20)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 800.0
@@ -42,25 +54,25 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme = SubResource("Theme_eeejb")
 alignment = 1
-
-[node name="WPMValue" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=897990601]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("1_64xbg")
-theme_override_font_sizes/font_size = 32
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="WPMlabel" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=689318204]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("1_64xbg")
-theme_override_font_sizes/font_size = 32
-text = "WPM"
+text = "SPEED:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WPMValue" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=897990601]
+visible = false
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("1_64xbg")
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -70,30 +82,31 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
-[node name="MistakesValue" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=1056204276]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("1_64xbg")
-theme_override_font_sizes/font_size = 32
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Mistakeslabel" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=11041179]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("1_64xbg")
-theme_override_font_sizes/font_size = 32
-text = "MISTAKES"
+text = "MISTAKES:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MistakesValue" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=1056204276]
+visible = false
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("1_64xbg")
+text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ProgressBar" type="ProgressBar" parent="MainContainer" unique_id=1133155190]
+custom_minimum_size = Vector2(300, 16)
 layout_mode = 2
+size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("1_64xbg")
-theme_override_font_sizes/font_size = 32
 theme_override_styles/background = SubResource("StyleBoxFlat_eeejb")
 theme_override_styles/fill = SubResource("StyleBoxFlat_pc8i4")
+show_percentage = false
