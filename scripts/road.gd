@@ -1,164 +1,175 @@
 extends Node2D
 
-# Node references
 @onready var tilemap = $Tilemap
 @onready var background_layer = $Tilemap/Background
 @onready var road_layer = $Tilemap/Road
-@onready var snakes_layer = $Tilemap/Snakes
+@onready var apple_layer = $Tilemap/Apples
+@onready var top_snake = $TopSnake
+@onready var bottom_snake = $BottomSnake
+@onready var camera = $Camera2D
 
 # Tile configuration
-var tile_size: int = 16  # Assuming 16x16 tiles
-var snake_length: int = 4  # Length of each snake
-
-# Game state
+var tile_size: int = 16
+var snake_length: int = 4
+var original_width: int = 0
+var original_height: int = 0
 var current_text: String = ""
 var text_length: int = 0
-var original_width: int = 0  # Width of originally painted area
-var is_ready: bool = false  # Flag to track if road is ready
+var is_ready: bool = false
 
-# Snake positions and tracking
-var top_snake_head: Vector2i = Vector2i(-1, -1)
-var bottom_snake_head: Vector2i = Vector2i(-1, -1)
-var top_snake_cells: Array = []  # All cells occupied by top snake
-var bottom_snake_cells: Array = []  # All cells occupied by bottom snake
+# Apple start positions (cell coordinates)
+var top_apple_start_cell: Vector2i = Vector2i(6, 14)
+var bottom_apple_start_cell: Vector2i = Vector2i(6, 20)
 
-# Text tracking
-var top_text_cells: Array = []  # Cells where top snake's text is placed
-var bottom_text_cells: Array = []  # Cells where bottom snake's text is placed
-var top_text_eaten: Array = []  # Track which characters are eaten
-var bottom_text_eaten: Array = []  # Track which characters are eaten
+# Snake world positions (from your coordinates)
+var top_snake_y: int = 230
+var bottom_snake_y: int = 327
 
-# Apple tile
-var apple_tile: Vector2i = Vector2i(0, 21)
+# Camera settings
+var camera_follow_speed: float = 5.0
+var camera_offset: Vector2 = Vector2(600, 0)  # Increased offset to keep player on right side
 
-# Snake tile IDs - different for top and bottom snakes
-var top_snake_head_tile: Vector2i = Vector2i(8, 13)
-var top_snake_body_tile: Vector2i = Vector2i(1, 9)
-var top_snake_tail_tile: Vector2i = Vector2i(9, 9)
+# Letter to tile mapping (based on your tileset layout)
+var letter_to_tile = {
+	"q": Vector2i(0, 0), "w": Vector2i(1, 0), "e": Vector2i(2, 0), "r": Vector2i(3, 0), "t": Vector2i(4, 0), "y": Vector2i(5, 0),
+	"u": Vector2i(0, 1), "i": Vector2i(1, 1), "o": Vector2i(2, 1), "p": Vector2i(3, 1), "a": Vector2i(4, 1), "s": Vector2i(5, 1),
+	"d": Vector2i(0, 2), "f": Vector2i(1, 2), "g": Vector2i(2, 2), "h": Vector2i(3, 2), "j": Vector2i(4, 2), "k": Vector2i(5, 2),
+	"l": Vector2i(0, 3), "z": Vector2i(1, 3), "x": Vector2i(2, 3), "c": Vector2i(3, 3), "v": Vector2i(4, 3), "b": Vector2i(5, 3),
+	"n": Vector2i(0, 4), "m": Vector2i(1, 4), " ": Vector2i(2, 4)  # Space at (2,4)
+}
 
-var bottom_snake_head_tile: Vector2i = Vector2i(8, 20)
-var bottom_snake_body_tile: Vector2i = Vector2i(1, 16)
-var bottom_snake_tail_tile: Vector2i = Vector2i(9, 16)
+# Apple tracking
+var apple_positions_top: Array = []  # Array of {cell: Vector2i, letter: String, eaten: bool}
+var apple_positions_bottom: Array = []
 
 func _ready():
-	# Store the original width of your painted map
-	calculate_original_width()
-	# Find initial snake positions
-	find_snake_heads()
+	calculate_original_dimensions()
+	setup_camera()
+	# Set snake positions
+	if top_snake:
+		top_snake.position = Vector2(0, top_snake_y)
+	if bottom_snake:
+		bottom_snake.position = Vector2(0, bottom_snake_y)
+	
 	is_ready = true
 
-func calculate_original_width():
+func _process(delta):
+	# Camera follows bottom snake (player)
+	if bottom_snake and camera:
+		var head_pos = bottom_snake.get_head_position()
+		# Position camera so player is closer to right edge
+		var target_x = head_pos.x - camera_offset.x
+		var current_pos = camera.position
+		var new_x = lerp(current_pos.x, target_x, camera_follow_speed * delta)
+		camera.position = Vector2(new_x, current_pos.y)
+
+func calculate_original_dimensions():
 	var max_x = 0
-	var found_cells = false
+	var max_y = 0
 	
-	for layer in [background_layer, road_layer, snakes_layer]:
+	for layer in [background_layer, road_layer, apple_layer]:
 		if layer:
-			var used_cells = layer.get_used_cells()
-			if used_cells.size() > 0:
-				found_cells = true
-			for cell in used_cells:
-				if cell.x > max_x:
-					max_x = cell.x
+			for cell in layer.get_used_cells():
+				max_x = max(max_x, cell.x)
+				max_y = max(max_y, cell.y)
 	
-	if found_cells:
-		original_width = max_x + 1
-	else:
-		original_width = 20
+	original_width = max_x + 1
+	original_height = max_y + 1
+	
+	print("Original map size: ", original_width, " x ", original_height)
 
-func find_snake_heads():
-	if snakes_layer:
-		for x in range(original_width):
-			var cell = Vector2i(x, 14)
-			var atlas_coords = snakes_layer.get_cell_atlas_coords(cell)
-			if atlas_coords != Vector2i(-1, -1):
-				if atlas_coords == top_snake_head_tile:
-					top_snake_head = cell
-					break
-		
-		for x in range(original_width):
-			var cell = Vector2i(x, 20)
-			var atlas_coords = snakes_layer.get_cell_atlas_coords(cell)
-			if atlas_coords != Vector2i(-1, -1):
-				if atlas_coords == bottom_snake_head_tile:
-					bottom_snake_head = cell
-					break
+func setup_camera():
+	if not camera:
+		return
 	
-	if top_snake_head == Vector2i(-1, -1):
-		top_snake_head = Vector2i(snake_length - 1, 14)
-	if bottom_snake_head == Vector2i(-1, -1):
-		bottom_snake_head = Vector2i(snake_length - 1, 20)
+	# Set camera limits
+	camera.limit_left = 0
+	camera.limit_right = 5000  # Large initial limit
+	camera.limit_top = 0
+	camera.limit_bottom = original_height * tile_size
 	
-	build_snake_cells()
-
-func build_snake_cells():
-	if snakes_layer and top_snake_head != Vector2i(-1, -1):
-		top_snake_cells.clear()
-		var current_pos = top_snake_head
-		var found_segments = 0
-		
-		while found_segments < snake_length and current_pos.x >= 0:
-			var atlas_coords = snakes_layer.get_cell_atlas_coords(current_pos)
-			if atlas_coords != Vector2i(-1, -1):
-				top_snake_cells.insert(0, current_pos)
-				found_segments += 1
-			current_pos = Vector2i(current_pos.x - 1, current_pos.y)
-	
-	if snakes_layer and bottom_snake_head != Vector2i(-1, -1):
-		bottom_snake_cells.clear()
-		var current_pos = bottom_snake_head
-		var found_segments = 0
-		
-		while found_segments < snake_length and current_pos.x >= 0:
-			var atlas_coords = snakes_layer.get_cell_atlas_coords(current_pos)
-			if atlas_coords != Vector2i(-1, -1):
-				bottom_snake_cells.insert(0, current_pos)
-				found_segments += 1
-			current_pos = Vector2i(current_pos.x - 1, current_pos.y)
+	# Center camera initially with player on right side
+	camera.position = Vector2(400, bottom_snake_y)
 
 func set_text(new_text: String):
 	if not is_ready:
 		await ready
 	
+	# Keep spaces in the text
 	current_text = new_text.to_lower()
-	text_length = new_text.length()
+	text_length = current_text.length()
 	
-	# Initialize eaten arrays
-	top_text_eaten = []
-	bottom_text_eaten = []
+	# Clear existing apples
+	clear_apples()
+	
+	# Initialize apple positions
+	apple_positions_top.clear()
+	apple_positions_bottom.clear()
+	
+	print("Setting text with spaces: '", current_text, "' length: ", text_length)
+	
+	# First, duplicate the background and road to the right to cover text length
+	duplicate_for_text_length()
+	
+	# Place apples for top snake
 	for i in range(text_length):
-		top_text_eaten.append(false)
-		bottom_text_eaten.append(false)
+		var letter = current_text[i]
+		if letter in letter_to_tile:
+			var tile_coords = letter_to_tile[letter]
+			
+			# Top snake apples - start at (6, 14) and go right
+			var top_cell = Vector2i(top_apple_start_cell.x + i, top_apple_start_cell.y)
+			apple_layer.set_cell(top_cell, 0, tile_coords)
+			apple_positions_top.append({"cell": top_cell, "letter": letter, "eaten": false})
 	
-	# Extend the map to the right
-	extend_map_to_right()
+	# Place apples for bottom snake
+	for i in range(text_length):
+		var letter = current_text[i]
+		if letter in letter_to_tile:
+			var tile_coords = letter_to_tile[letter]
+			
+			# Bottom snake apples - start at (6, 20) and go right
+			var bottom_cell = Vector2i(bottom_apple_start_cell.x + i, bottom_apple_start_cell.y)
+			apple_layer.set_cell(bottom_cell, 0, tile_coords)
+			apple_positions_bottom.append({"cell": bottom_cell, "letter": letter, "eaten": false})
 	
-	# Place apples on both snakes
-	place_apples_on_snakes()
+	# Extend camera limits generously
+	var needed_width = (bottom_apple_start_cell.x + text_length + 30) * tile_size  # Extra padding
+	if camera and camera.limit_right < needed_width:
+		camera.limit_right = needed_width
+	
+	print("Placed ", text_length, " apples for each snake")
 
-func extend_map_to_right():
-	var needed_width = original_width + text_length + 10
+func duplicate_for_text_length():
+	# Calculate how many times we need to repeat the pattern
+	var needed_width = bottom_apple_start_cell.x + text_length + 20
 	var repeats_needed = ceil(float(needed_width) / float(original_width))
 	
-	for rep in range(1, int(repeats_needed)):
+	print("Original width: ", original_width, ", needed width: ", needed_width)
+	print("Repeating pattern ", repeats_needed, " times")
+	
+	# For each repetition, duplicate the existing tiles
+	for rep in range(1, int(repeats_needed) + 2):  # +2 for extra safety
 		var start_x = rep * original_width
 		duplicate_pattern_to_right(start_x)
 
 func duplicate_pattern_to_right(start_x: int):
+	# Duplicate background layer
 	if background_layer:
 		duplicate_layer(background_layer, start_x)
 	
+	# Duplicate road layer
 	if road_layer:
 		duplicate_layer(road_layer, start_x)
-	
-	if snakes_layer:
-		duplicate_layer_excluding_snakes(snakes_layer, start_x)
 
 func duplicate_layer(layer: TileMapLayer, start_x: int):
+	# Get all used cells in the original pattern
 	var original_cells = []
 	for cell in layer.get_used_cells():
 		if cell.x < original_width:
 			original_cells.append(cell)
 	
+	# Duplicate each cell to the new position
 	for cell in original_cells:
 		var source_id = layer.get_cell_source_id(cell)
 		var atlas_coords = layer.get_cell_atlas_coords(cell)
@@ -168,161 +179,74 @@ func duplicate_layer(layer: TileMapLayer, start_x: int):
 			var new_cell = Vector2i(cell.x + start_x, cell.y)
 			layer.set_cell(new_cell, source_id, atlas_coords, alternative_tile)
 
-func duplicate_layer_excluding_snakes(layer: TileMapLayer, start_x: int):
-	var original_cells = []
-	for cell in layer.get_used_cells():
-		if cell.x < original_width:
-			var atlas_coords = layer.get_cell_atlas_coords(cell)
-			
-			if atlas_coords != Vector2i(-1, -1):
-				if atlas_coords != top_snake_head_tile and \
-				   atlas_coords != top_snake_body_tile and \
-				   atlas_coords != top_snake_tail_tile and \
-				   atlas_coords != bottom_snake_head_tile and \
-				   atlas_coords != bottom_snake_body_tile and \
-				   atlas_coords != bottom_snake_tail_tile and \
-				   atlas_coords != apple_tile:
-					original_cells.append(cell)
-	
-	for cell in original_cells:
-		var source_id = layer.get_cell_source_id(cell)
-		var atlas_coords = layer.get_cell_atlas_coords(cell)
-		var alternative_tile = layer.get_cell_alternative_tile(cell)
-		
-		if source_id != -1:
-			var new_cell = Vector2i(cell.x + start_x, cell.y)
-			layer.set_cell(new_cell, source_id, atlas_coords, alternative_tile)
+func clear_apples():
+	if apple_layer:
+		for cell in apple_layer.get_used_cells():
+			apple_layer.set_cell(cell, -1, Vector2i(-1, -1))
 
-func place_apples_on_snakes():
-	if not snakes_layer or current_text.is_empty():
-		return
-	
-	clear_apple_area()
-	
-	top_text_cells.clear()
-	bottom_text_cells.clear()
-	
-	find_snake_heads()
-	
-	var top_y = top_snake_head.y
-	var top_start_x = top_snake_head.x + 1
-	
-	for i in range(text_length):
-		var cell_x = top_start_x + i
-		var cell = Vector2i(cell_x, top_y)
-		
-		if not top_text_eaten[i]:
-			snakes_layer.set_cell(cell, 0, apple_tile)
-			top_text_cells.append(cell)
-	
-	var bottom_y = bottom_snake_head.y
-	var bottom_start_x = bottom_snake_head.x + 1
-	
-	for i in range(text_length):
-		var cell_x = bottom_start_x + i
-		var cell = Vector2i(cell_x, bottom_y)
-		
-		if not bottom_text_eaten[i]:
-			snakes_layer.set_cell(cell, 0, apple_tile)
-			bottom_text_cells.append(cell)
-
-func clear_apple_area():
-	if snakes_layer:
-		var cells_to_clear = []
-		
-		for cell in top_text_cells + bottom_text_cells:
-			cells_to_clear.append(cell)
-		
-		for cell in snakes_layer.get_used_cells():
-			if cell.x >= original_width:
-				var atlas_coords = snakes_layer.get_cell_atlas_coords(cell)
-				if atlas_coords == apple_tile:
-					cells_to_clear.append(cell)
-		
-		var unique_cells = []
-		for cell in cells_to_clear:
-			if cell not in unique_cells:
-				unique_cells.append(cell)
-		
-		for cell in unique_cells:
-			snakes_layer.set_cell(cell, -1, Vector2i(-1, -1))
-
-func eat_apple(snake: String, position_index: int):
+func eat_apple(snake: String, position_index: int) -> bool:
 	if position_index >= text_length:
-		return
+		return false
 	
-	var head_pos = top_snake_head if snake == "top" else bottom_snake_head
-	var y = head_pos.y
+	var apple_array = apple_positions_top if snake == "top" else apple_positions_bottom
 	
-	if snake == "top":
-		top_text_eaten[position_index] = true
-	else:
-		bottom_text_eaten[position_index] = true
+	if position_index >= apple_array.size():
+		return false
 	
-	var apple_cell_x = head_pos.x + 1 + position_index
-	var apple_cell = Vector2i(apple_cell_x, y)
+	if apple_array[position_index]["eaten"]:
+		return false
 	
-	snakes_layer.set_cell(apple_cell, -1, Vector2i(-1, -1))
+	# Mark as eaten
+	apple_array[position_index]["eaten"] = true
 	
-	move_snake_forward(snake)
-
-func move_snake_forward(snake: String):
-	var head_pos = top_snake_head if snake == "top" else bottom_snake_head
-	var y = head_pos.y
+	# Remove the apple tile
+	var apple_cell = apple_array[position_index]["cell"]
+	apple_layer.set_cell(apple_cell, -1, Vector2i(-1, -1))
 	
-	var new_head_x = head_pos.x + 1
-	var new_head = Vector2i(new_head_x, y)
+	# Animate the appropriate snake
+	if snake == "top" and top_snake:
+		top_snake.eat_apple()
+	elif snake == "bottom" and bottom_snake:
+		bottom_snake.eat_apple()
 	
-	var head_tile = top_snake_head_tile if snake == "top" else bottom_snake_head_tile
-	var body_tile = top_snake_body_tile if snake == "top" else bottom_snake_body_tile
-	var tail_tile = top_snake_tail_tile if snake == "top" else bottom_snake_tail_tile
-	
-	snakes_layer.set_cell(new_head, 0, head_tile)
-	snakes_layer.set_cell(head_pos, 0, body_tile)
-	
-	if snake == "top":
-		top_snake_head = new_head
-		if top_snake_cells.size() > 0:
-			top_snake_cells.append(new_head)
-			if top_snake_cells.size() > snake_length:
-				var old_tail = top_snake_cells[0]
-				snakes_layer.set_cell(old_tail, -1, Vector2i(-1, -1))
-				top_snake_cells.remove_at(0)
-				if top_snake_cells.size() > 0:
-					var new_tail = top_snake_cells[0]
-					snakes_layer.set_cell(new_tail, 0, tail_tile)
-	else:
-		bottom_snake_head = new_head
-		if bottom_snake_cells.size() > 0:
-			bottom_snake_cells.append(new_head)
-			if bottom_snake_cells.size() > snake_length:
-				var old_tail = bottom_snake_cells[0]
-				snakes_layer.set_cell(old_tail, -1, Vector2i(-1, -1))
-				bottom_snake_cells.remove_at(0)
-				if bottom_snake_cells.size() > 0:
-					var new_tail = bottom_snake_cells[0]
-					snakes_layer.set_cell(new_tail, 0, tail_tile)
-
-func is_apple_eaten(snake: String, position_index: int) -> bool:
-	if snake == "top":
-		return position_index < top_text_eaten.size() and top_text_eaten[position_index]
-	else:
-		return position_index < bottom_text_eaten.size() and bottom_text_eaten[position_index]
-
-func get_current_text() -> String:
-	return current_text
+	return true
 
 func get_text_length() -> int:
 	return text_length
 
+func get_current_text() -> String:
+	return current_text
+
+func get_snake_head_positions() -> Dictionary:
+	return {
+		"top": top_snake.get_head_position() if top_snake else Vector2.ZERO,
+		"bottom": bottom_snake.get_head_position() if bottom_snake else Vector2.ZERO
+	}
+
 func reset_game():
-	top_text_eaten = []
-	bottom_text_eaten = []
-	for i in range(text_length):
-		top_text_eaten.append(false)
-		bottom_text_eaten.append(false)
+	# Reset apple eaten states
+	for apple in apple_positions_top:
+		apple["eaten"] = false
+	for apple in apple_positions_bottom:
+		apple["eaten"] = false
 	
-	clear_apple_area()
-	place_apples_on_snakes()
+	# Redraw apples
+	clear_apples()
+	for apple in apple_positions_top:
+		if not apple["eaten"]:
+			apple_layer.set_cell(apple["cell"], 0, letter_to_tile[apple["letter"]])
+	for apple in apple_positions_bottom:
+		if not apple["eaten"]:
+			apple_layer.set_cell(apple["cell"], 0, letter_to_tile[apple["letter"]])
 	
-	find_snake_heads()
+	# Reset snake positions
+	if top_snake:
+		top_snake.reset_position(3 * tile_size)
+	if bottom_snake:
+		bottom_snake.reset_position(3 * tile_size)
+	
+	# Reset camera
+	if camera:
+		camera.position = Vector2(400, bottom_snake_y)
+	
+	print("Game reset")

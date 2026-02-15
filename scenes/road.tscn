@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://csy51rmbmptjf"]
 
-[ext_resource type="Script" uid="uid://cdx41hdly7byf" path="res://scripts/stats_panel.gd" id="1_my2y2"]
-[ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="2_fy6l0"]
+[ext_resource type="TileSet" uid="uid://dka1eaxbsr0oc" path="res://resources/tileset.tres" id="1_mv8x7"]
+[ext_resource type="Script" uid="uid://16t5h3mlk1cx" path="res://scripts/road.gd" id="1_my2y2"]
+[ext_resource type="TileSet" uid="uid://bipvcs0n4b2yj" path="res://resources/letters_tileset.tres" id="3_fy6l0"]
+[ext_resource type="PackedScene" uid="uid://ctbq0agwmyydr" path="res://scenes/snake.tscn" id="4_ekj83"]
 
 [sub_resource type="Theme" id="Theme_eeejb"]
 
@@ -57,56 +59,16 @@ size_flags_vertical = 4
 theme = SubResource("Theme_eeejb")
 alignment = 1
 
-[node name="WPMlabel" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=689318204]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("2_fy6l0")
-text = "SPEED:"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Apples" type="TileMapLayer" parent="Tilemap" unique_id=1373129237]
+tile_set = ExtResource("3_fy6l0")
 
-[node name="WPMValue" type="Label" parent="MainContainer/TopRow/WPMContainer" unique_id=897990601]
-visible = false
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("2_fy6l0")
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="TopSnake" parent="." unique_id=1216970662 instance=ExtResource("4_ekj83")]
+position = Vector2(84, 230)
 
-[node name="MistakesContainer" type="HBoxContainer" parent="MainContainer/TopRow" unique_id=309595098]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-alignment = 1
+[node name="BottomSnake" parent="." unique_id=494244759 instance=ExtResource("4_ekj83")]
+position = Vector2(84, 327)
 
-[node name="Mistakeslabel" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=11041179]
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("2_fy6l0")
-text = "MISTAKES:"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MistakesValue" type="Label" parent="MainContainer/TopRow/MistakesContainer" unique_id=1056204276]
-visible = false
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_fonts/font = ExtResource("2_fy6l0")
-text = "0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ProgressBar" type="ProgressBar" parent="MainContainer" unique_id=1133155190]
-custom_minimum_size = Vector2(300, 16)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_fonts/font = ExtResource("2_fy6l0")
-theme_override_styles/background = SubResource("StyleBoxFlat_eeejb")
-theme_override_styles/fill = SubResource("StyleBoxFlat_pc8i4")
-show_percentage = false
+[node name="Camera2D" type="Camera2D" parent="." unique_id=630590753]
+position = Vector2(401, 302)
+position_smoothing_enabled = true
+rotation_smoothing_enabled = true

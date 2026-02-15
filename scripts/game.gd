@@ -15,10 +15,9 @@ extends Control
 
 # Game state
 var current_text: String = ""
-var current_text_no_spaces: String = ""
-var current_input: String = ""
-var current_position: int = 0  # Player's current position
-var bot_position: int = 0  # Bot's current position
+var current_text_with_spaces: String = ""  # Keep spaces for display
+var current_position: int = 0
+var bot_position: int = 0
 var mistakes: int = 0
 var start_time: int = 0
 var is_typing: bool = false
@@ -26,21 +25,16 @@ var timer_running: bool = false
 var game_completed: bool = false
 
 # Bot settings
-var bot_typing_speed: float = 0.3  # Seconds between bot moves
+var bot_typing_speed: float = 0.3
 var bot_timer: float = 0.0
 
-# Sample texts
+# Sample texts with spaces
 var sample_texts = [
 	"the quick brown fox jumps over the lazy dog",
 	"programming is the art of telling another human what one wants the computer to do",
 	"practice makes perfect but perfect practice makes perfect permanent",
 	"learning to type quickly is an essential skill in the digital age",
-	"the only way to learn a new programming language is by writing programs in it",
-	"a quick movement of the enemy will jeopardize six gunboats",
-	"all questions asked by five watched experts amaze the judge",
-	"the five boxing wizards jump quickly",
-	"pack my box with five dozen liquor jugs",
-	"how vexingly quick daft zebras jump"
+	"the only way to learn a new programming language is by writing programs in it"
 ]
 
 func _ready():
@@ -53,7 +47,6 @@ func _ready():
 	
 	if text_selector:
 		text_selector.item_selected.connect(_on_text_selected)
-		
 		for i in range(sample_texts.size()):
 			text_selector.add_item("Text " + str(i + 1), i)
 		text_selector.select(0)
@@ -62,10 +55,15 @@ func _ready():
 	if virtual_keyboard and virtual_keyboard.has_signal("key_pressed"):
 		virtual_keyboard.key_pressed.connect(_on_key_pressed)
 	
-	set_process_input(true)
+	# Set bot speed
+	if road and road.has_node("TopSnake"):
+		var bot_snake = road.get_node("TopSnake")
+		bot_snake.set_bot_speed(bot_typing_speed)
+		bot_snake.snake_type = 1  # BOT type
+		print("Bot snake configured with speed: ", bot_typing_speed)
 	
+	set_process_input(true)
 	show_control_buttons()
-	update_display()
 	
 	if typing_display:
 		typing_display.visible = false
@@ -83,8 +81,8 @@ func _input(event):
 			_on_key_pressed("Backspace", false)
 			highlight_virtual_key("Backspace")
 		elif event.keycode == KEY_SPACE:
-			# Spaces don't trigger apple eating
-			pass
+			_on_key_pressed(" ", false)
+			highlight_virtual_key("Space")
 		elif key_unicode >= 97 and key_unicode <= 122:
 			var character = char(key_unicode)
 			_on_key_pressed(character, false)
@@ -104,21 +102,6 @@ func _process(delta):
 	
 	if timer_running and start_time > 0:
 		update_wpm()
-	
-	bot_timer += delta
-	while bot_timer >= bot_typing_speed and bot_position < current_text_no_spaces.length():
-		bot_timer -= bot_typing_speed
-		bot_type()
-
-func bot_type():
-	if bot_position >= current_text_no_spaces.length():
-		return
-	
-	if road and road.has_method("eat_apple"):
-		road.eat_apple("top", bot_position)
-	
-	bot_position += 1
-	check_completion()
 
 func _on_start_pressed():
 	hide_control_buttons()
@@ -130,16 +113,14 @@ func _on_start_pressed():
 	timer_running = true
 	is_typing = true
 	game_completed = false
-	current_input = ""
 	current_position = 0
 	bot_position = 0
 	mistakes = 0
 	bot_timer = 0.0
 	
-	# Set the text on the road
-	if road and road.has_method("set_text") and current_text != "":
-		current_text_no_spaces = current_text.replace(" ", "")
-		road.set_text(current_text_no_spaces)
+	# Set the text on the road (with spaces)
+	if road and road.has_method("set_text") and current_text_with_spaces != "":
+		road.set_text(current_text_with_spaces)
 	
 	if virtual_keyboard and virtual_keyboard.has_method("enable_keyboard"):
 		virtual_keyboard.enable_keyboard(true)
@@ -152,31 +133,16 @@ func _on_restart_pressed():
 func show_road_layers():
 	if not road:
 		return
-	
 	road.visible = true
-	
-	if road.has_node("Tilemap"):
-		var tilemap = road.get_node("Tilemap")
-		for layer in tilemap.get_children():
-			if layer is TileMapLayer:
-				layer.visible = true
 
 func hide_road_layers():
 	if not road:
 		return
-	
 	road.visible = false
-	
-	if road.has_node("Tilemap"):
-		var tilemap = road.get_node("Tilemap")
-		for layer in tilemap.get_children():
-			if layer is TileMapLayer:
-				layer.visible = false
 
 func _on_text_selected(index: int):
 	if index >= 0 and index < sample_texts.size():
-		current_text = sample_texts[index]
-		current_text_no_spaces = current_text.replace(" ", "")
+		current_text_with_spaces = sample_texts[index]
 		update_display()
 
 func _on_key_pressed(key_char: String, _is_shifted):
@@ -186,10 +152,8 @@ func _on_key_pressed(key_char: String, _is_shifted):
 	if key_char == "Backspace":
 		if current_position > 0:
 			current_position -= 1
-			current_input = current_input.substr(0, current_position)
 	elif key_char == " ":
-		# Ignore spaces
-		pass
+		process_character(" ")
 	elif key_char.length() == 1 and key_char >= "a" and key_char <= "z":
 		process_character(key_char)
 	
@@ -197,26 +161,25 @@ func _on_key_pressed(key_char: String, _is_shifted):
 	check_completion()
 
 func process_character(character: String):
-	if current_position >= current_text_no_spaces.length():
+	if current_position >= current_text_with_spaces.length():
 		return
 	
-	var expected_char = current_text_no_spaces[current_position]
+	var expected_char = current_text_with_spaces[current_position]
 	
 	if character == expected_char:
+		# Correct - eat apple
 		if road and road.has_method("eat_apple"):
 			road.eat_apple("bottom", current_position)
-		
 		current_position += 1
-		current_input += character
-		check_completion()
 	else:
+		# Mistake
 		mistakes += 1
 		if stats_panel and stats_panel.has_method("update_mistakes"):
 			stats_panel.update_mistakes(mistakes)
 
 func update_display():
-	if stats_panel and stats_panel.has_method("update_progress") and current_text_no_spaces.length() > 0:
-		var progress = (float(current_position) / float(current_text_no_spaces.length())) * 100
+	if stats_panel and stats_panel.has_method("update_progress") and current_text_with_spaces.length() > 0:
+		var progress = (float(current_position) / float(current_text_with_spaces.length())) * 100
 		stats_panel.update_progress(progress)
 
 func update_wpm():
@@ -236,15 +199,15 @@ func update_wpm():
 		stats_panel.update_wpm(wpm)
 
 func check_completion():
-	var total_length = current_text_no_spaces.length()
+	var total_length = current_text_with_spaces.length()
 	if total_length == 0:
 		return
 		
-	if current_position >= total_length and bot_position >= total_length and not game_completed:
+	if current_position >= total_length and not game_completed:
 		complete_typing()
 
 func calculate_score() -> int:
-	var total_length = current_text_no_spaces.length()
+	var total_length = current_text_with_spaces.length()
 	var base_score = total_length * 100
 	var mistake_penalty = mistakes * 50
 	
@@ -256,8 +219,7 @@ func calculate_score() -> int:
 	var wpm_bonus = wpm * 10
 	var time_bonus = max(0, 300 - int(elapsed_seconds)) * 2
 	
-	var total = base_score - mistake_penalty + wpm_bonus + time_bonus
-	return max(100, total)
+	return max(100, base_score - mistake_penalty + wpm_bonus + time_bonus)
 
 func complete_typing():
 	is_typing = false
@@ -268,15 +230,13 @@ func complete_typing():
 		virtual_keyboard.enable_keyboard(false)
 	
 	var final_score = calculate_score()
-	
 	if score_label:
 		score_label.text = "Score: " + str(final_score)
 	
 	show_finished_buttons()
-	print("Game completed! Player: ", current_position, ", Bot: ", bot_position, " Mistakes: ", mistakes)
+	print("Game completed! Score: ", final_score, " Mistakes: ", mistakes)
 
 func reset_game():
-	current_input = ""
 	current_position = 0
 	bot_position = 0
 	mistakes = 0
@@ -291,24 +251,21 @@ func reset_game():
 			stats_panel.update_mistakes(0)
 		if stats_panel.has_method("reset_progress"):
 			stats_panel.reset_progress()
+	
+	if road and road.has_method("reset_game"):
+		road.reset_game()
 
 func hide_control_buttons():
 	if control_buttons:
 		control_buttons.visible = false
-		control_buttons.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
 	if control_buttons_bg:
 		control_buttons_bg.visible = false
-		control_buttons_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func show_control_buttons():
 	if control_buttons:
 		control_buttons.visible = true
-		control_buttons.mouse_filter = Control.MOUSE_FILTER_STOP
-	
 	if control_buttons_bg:
 		control_buttons_bg.visible = true
-		control_buttons_bg.mouse_filter = Control.MOUSE_FILTER_STOP
 	
 	hide_road_layers()
 	hide_finished_buttons()
@@ -316,9 +273,7 @@ func show_control_buttons():
 func show_finished_buttons():
 	if finished_buttons:
 		finished_buttons.visible = true
-		finished_buttons.mouse_filter = Control.MOUSE_FILTER_STOP
 
 func hide_finished_buttons():
 	if finished_buttons:
 		finished_buttons.visible = false
-		finished_buttons.mouse_filter = Control.MOUSE_FILTER_IGNORE
