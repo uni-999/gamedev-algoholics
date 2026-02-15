@@ -19,6 +19,7 @@ config/icon="res://assets/icon.svg"
 
 window/size/viewport_width=800
 window/size/viewport_height=600
+window/stretch/mode="viewport"
 
 [gui]
 
@@ -30,4 +31,5 @@ theme/default_font_multichannel_signed_distance_field=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"

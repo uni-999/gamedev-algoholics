@@ -3,20 +3,28 @@ extends Control
 # Node references
 @onready var stats_panel = $GameContainer/StatsPanel
 @onready var typing_display = $GameContainer/TypingDisplay
+@onready var road = $GameContainer/Road  # Add road reference
 @onready var virtual_keyboard = $GameContainer/VirtualKeyboard
 @onready var text_selector = $ControlButtons/TextSelector
 @onready var start_button = $ControlButtons/StartButton
 @onready var control_buttons = $ControlButtons
 @onready var control_buttons_bg = $ControlButtonsBackground
+@onready var finished_buttons = $FinishedButtons
+
 
 # Game state
 var current_text: String = ""
 var current_input: String = ""
-var current_position: int = 0
+var current_position: int = 0  # Player's current position
+var bot_position: int = 0  # Bot's current position
 var mistakes: int = 0
 var start_time: int = 0
 var is_typing: bool = false
 var timer_running: bool = false
+
+# Bot settings
+var bot_typing_speed: float = 0.3  # Seconds between bot moves (adjust for difficulty)
+var bot_timer: float = 0.0
 
 # Sample texts for typing practice (lowercase only, no punctuation)
 var sample_texts = [
@@ -60,6 +68,10 @@ func _ready():
 	
 	# Initialize display
 	update_display()
+	
+	# Make typing display invisible
+	if typing_display:
+		typing_display.visible = false
 
 func _input(event):
 	if not is_typing or not event is InputEventKey:
@@ -91,13 +103,40 @@ func highlight_virtual_key(key: String):
 	if virtual_keyboard and virtual_keyboard.has_method("highlight_key"):
 		virtual_keyboard.highlight_key(key)
 
-func _process(_delta):
-	if is_typing and timer_running and start_time > 0:
+func _process(delta):
+	if not is_typing:
+		return
+	
+	# Update WPM
+	if timer_running and start_time > 0:
 		update_wpm()
+	
+	# Bot typing timer
+	bot_timer += delta
+	while bot_timer >= bot_typing_speed and bot_position < current_text.length():
+		bot_timer -= bot_typing_speed
+		bot_type()
+
+func bot_type():
+	if bot_position >= current_text.length():
+		return
+	
+	# Bot eats its apple
+	if road and road.has_method("eat_apple"):
+		road.eat_apple("top", bot_position)
+	
+	bot_position += 1
+	
+	# Check if bot completed the text
+	if bot_position >= current_text.length() and current_position >= current_text.length():
+		complete_typing()
 
 func _on_start_pressed():
 	# Hide control buttons
 	hide_control_buttons()
+	
+	# Make road and its layers visible
+	show_road_layers()
 	
 	# Reset and start game
 	reset_game()
@@ -106,13 +145,47 @@ func _on_start_pressed():
 	is_typing = true
 	current_input = ""
 	current_position = 0
+	bot_position = 0
 	mistakes = 0
+	bot_timer = 0.0
+	
+	# Set the text on the road
+	if road and road.has_method("set_text"):
+		# Remove spaces for the road display (continuous apples)
+		var text_no_spaces = current_text.replace(" ", "")
+		road.set_text(text_no_spaces)
 	
 	if virtual_keyboard and virtual_keyboard.has_method("enable_keyboard"):
 		virtual_keyboard.enable_keyboard(true)
 		
 	# Make sure the current text is displayed
 	update_display()
+
+func show_road_layers():
+	if not road:
+		return
+	
+	road.visible = true
+	
+	# Make all TileMapLayer children visible
+	if road.has_node("Tilemap"):
+		var tilemap = road.get_node("Tilemap")
+		for layer in tilemap.get_children():
+			if layer is TileMapLayer:
+				layer.visible = true
+
+func hide_road_layers():
+	if not road:
+		return
+	
+	road.visible = false
+	
+	# Make all TileMapLayer children invisible
+	if road.has_node("Tilemap"):
+		var tilemap = road.get_node("Tilemap")
+		for layer in tilemap.get_children():
+			if layer is TileMapLayer:
+				layer.visible = false
 
 func _on_text_selected(index: int):
 	if index >= 0 and index < sample_texts.size():
@@ -143,35 +216,49 @@ func process_character(character: String):
 		var expected_char = current_text[current_position]
 		current_input += character
 		
-		if character != expected_char:
+		# Check if correct
+		if character == expected_char:
+			# Correct - eat apple and move snake
+			if road and road.has_method("eat_apple"):
+				road.eat_apple("bottom", current_position)
+			
+			current_position += 1
+			
+			# Check if player completed the text
+			if current_position >= current_text.length() and bot_position >= current_text.length():
+				complete_typing()
+		else:
+			# Mistake
 			mistakes += 1
 			if stats_panel and stats_panel.has_method("update_mistakes"):
 				stats_panel.update_mistakes(mistakes)
-		
-		current_position += 1
 
 func update_display():
-	if typing_display and typing_display.has_method("update_text"):
-		typing_display.update_text(current_text, current_input, current_position)
-	
-	# Update progress bar if available
+	# Update progress bar
 	if stats_panel and stats_panel.has_method("update_progress") and current_text.length() > 0:
 		var progress = (float(current_position) / float(current_text.length())) * 100
 		stats_panel.update_progress(progress)
 
 func update_wpm():
-	if start_time == 0:
+	if start_time == 0 or current_position == 0:
 		return
 		
-	var elapsed_minutes = (Time.get_ticks_msec() - start_time) / 60000.0
-	if elapsed_minutes > 0:
-		var words_typed = current_input.split(" ").size()
-		var wpm = int(words_typed / elapsed_minutes)
-		if stats_panel and stats_panel.has_method("update_wpm"):
-			stats_panel.update_wpm(wpm)
+	var elapsed_seconds = (Time.get_ticks_msec() - start_time) / 1000.0
+	if elapsed_seconds < 1.0:
+		return
+	
+	var elapsed_minutes = elapsed_seconds / 60.0
+	
+	# Calculate WPM: (characters typed / 5) / minutes
+	var words_typed = current_position / 5.0
+	var wpm = int(words_typed / elapsed_minutes)
+	wpm = max(0, wpm)
+	
+	if stats_panel and stats_panel.has_method("update_wpm"):
+		stats_panel.update_wpm(wpm)
 
 func check_completion():
-	if current_position >= current_text.length() and current_text.length() > 0:
+	if current_position >= current_text.length() and bot_position >= current_text.length() and current_text.length() > 0:
 		complete_typing()
 
 func complete_typing():
@@ -184,13 +271,15 @@ func complete_typing():
 	# Show control buttons again
 	show_control_buttons()
 	
-	print("Typing completed!")
+	print("Game completed! Final stats - Player: ", current_position, ", Bot: ", bot_position, " Mistakes: ", mistakes)
 
 func reset_game():
 	current_input = ""
 	current_position = 0
+	bot_position = 0
 	mistakes = 0
 	start_time = 0
+	bot_timer = 0.0
 	
 	if stats_panel:
 		if stats_panel.has_method("update_wpm"):
@@ -199,9 +288,6 @@ func reset_game():
 			stats_panel.update_mistakes(0)
 		if stats_panel.has_method("reset_progress"):
 			stats_panel.reset_progress()
-	
-	if typing_display and typing_display.has_method("reset_display"):
-		typing_display.reset_display()
 
 func hide_control_buttons():
 	if control_buttons:
@@ -220,3 +306,6 @@ func show_control_buttons():
 	if control_buttons_bg:
 		control_buttons_bg.visible = true
 		control_buttons_bg.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	# Hide road layers when showing controls
+	hide_road_layers()

@@ -4,7 +4,10 @@
 [ext_resource type="Script" uid="uid://dwjy704deema7" path="res://scripts/game.gd" id="1_bfhks"]
 [ext_resource type="PackedScene" uid="uid://cd2n1ft8y531m" path="res://scenes/ui/stats_panel.tscn" id="2_kfd0b"]
 [ext_resource type="PackedScene" uid="uid://vtcfb43nq8cj" path="res://scenes/ui/virtual_keyboard.tscn" id="2_nbrst"]
+[ext_resource type="PackedScene" uid="uid://csy51rmbmptjf" path="res://scenes/road.tscn" id="3_5mgl0"]
 [ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="5_lakwo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mgl0"]
 
 [node name="Game" type="Control" unique_id=1223640727]
 layout_mode = 3
@@ -16,6 +19,7 @@ grow_vertical = 2
 script = ExtResource("1_bfhks")
 
 [node name="Background" type="ColorRect" parent="." unique_id=338573679]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -52,13 +56,44 @@ anchor_right = 1.0
 anchor_bottom = 0.98
 offset_bottom = 3.0
 
+[node name="Road" parent="GameContainer" unique_id=2132394827 instance=ExtResource("3_5mgl0")]
+visible = true
+layout_mode = 1
+
 [node name="ControlButtonsBackground" type="ColorRect" parent="." unique_id=827763883]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="FinishedButtons" type="HBoxContainer" parent="." unique_id=1860671962]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="FinishedButtons" unique_id=1174160476]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("5_lakwo")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5mgl0")
+
+[node name="RestartButton" type="Button" parent="FinishedButtons" unique_id=79225561]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("5_lakwo")
+text = "START"
 
 [node name="ControlButtons" type="HBoxContainer" parent="." unique_id=842579292]
 layout_mode = 1
