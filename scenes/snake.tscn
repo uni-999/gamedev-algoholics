@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://ctbq0agwmyydr"]
+
+[ext_resource type="Texture2D" uid="uid://b8k36ngadkxmw" path="res://assets/snakebody2-0.png" id="1_a5f6l"]
+[ext_resource type="Script" uid="uid://druen6723ahcl" path="res://scripts/snake.gd" id="1_yc36x"]
+
+[node name="Snake" type="Node2D" unique_id=1216970662]
+z_index = 9
+script = ExtResource("1_yc36x")
+
+[node name="Head" type="Sprite2D" parent="." unique_id=1100819365]
+position = Vector2(-7, 9.536743e-07)
+rotation = 4.712389
+texture = ExtResource("1_a5f6l")
+region_enabled = true
+region_rect = Rect2(16, 32, 16, 16)
+
+[node name="Body1" type="Sprite2D" parent="." unique_id=315360019]
+position = Vector2(-23, 9.536743e-07)
+texture = ExtResource("1_a5f6l")
+region_enabled = true
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="Body2" type="Sprite2D" parent="." unique_id=418255458]
+position = Vector2(-39, 9.536743e-07)
+texture = ExtResource("1_a5f6l")
+region_enabled = true
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="Body3" type="Sprite2D" parent="." unique_id=1307711974]
+position = Vector2(-55, 9.536743e-07)
+texture = ExtResource("1_a5f6l")
+region_enabled = true
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="Tail" type="Sprite2D" parent="." unique_id=593779985]
+position = Vector2(-71, 9.536743e-07)
+rotation = 3.1415927
+texture = ExtResource("1_a5f6l")
+region_enabled = true
+region_rect = Rect2(48, 0, 16, 16)
