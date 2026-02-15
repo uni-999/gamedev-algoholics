@@ -12,6 +12,7 @@ extends Control
 @onready var finished_buttons = $CanvasLayer/FinishedButtons
 @onready var score_label = $CanvasLayer/FinishedButtons/ScoreLabel
 @onready var restart_button = $CanvasLayer/FinishedButtons/RestartButton
+@onready var miss_sound = $Miss
 @onready var music = $Music
 @onready var finish_sound = $Finish
 # Game state
@@ -172,6 +173,7 @@ func process_character(character: String):
 		current_position += 1
 	else:
 		# Mistake
+		miss_sound.play()
 		mistakes += 1
 		if stats_panel and stats_panel.has_method("update_mistakes"):
 			stats_panel.update_mistakes(mistakes)
