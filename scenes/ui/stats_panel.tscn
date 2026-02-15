@@ -2,6 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="1_64xbg"]
 [ext_resource type="Script" uid="uid://cdx41hdly7byf" path="res://scripts/stats_panel.gd" id="1_j00bn"]
+[ext_resource type="Script" uid="uid://cuvp87m28deyy" path="res://scripts/control_styling.gd" id="3_11bf3"]
 
 [sub_resource type="Theme" id="Theme_eeejb"]
 
@@ -110,3 +111,4 @@ theme_override_fonts/font = ExtResource("1_64xbg")
 theme_override_styles/background = SubResource("StyleBoxFlat_eeejb")
 theme_override_styles/fill = SubResource("StyleBoxFlat_pc8i4")
 show_percentage = false
+script = ExtResource("3_11bf3")

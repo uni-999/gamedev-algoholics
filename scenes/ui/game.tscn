@@ -6,8 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://vtcfb43nq8cj" path="res://scenes/ui/virtual_keyboard.tscn" id="2_nbrst"]
 [ext_resource type="PackedScene" uid="uid://csy51rmbmptjf" path="res://scenes/road.tscn" id="3_5mgl0"]
 [ext_resource type="FontFile" uid="uid://7e5nkjcbc361" path="res://assets/m6x11.ttf" id="5_lakwo"]
+[ext_resource type="Script" uid="uid://cuvp87m28deyy" path="res://scripts/control_styling.gd" id="7_6fy0c"]
 [ext_resource type="AudioStream" uid="uid://1jk13ao21lrf" path="res://assets/405220__shortiefoeva2__playground-runaround.mp3" id="7_xafdj"]
 [ext_resource type="AudioStream" uid="uid://cldpwerfy4op1" path="res://assets/253887__themusicalnomad__positive_beeps.wav" id="8_fdj2k"]
+[ext_resource type="Script" uid="uid://d4chrxxvxa8ws" path="res://scripts/restart_button.gd" id="8_icr1w"]
 [ext_resource type="AudioStream" uid="uid://dsa14ecf2r50c" path="res://assets/miss.wav" id="9_fytjj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5mgl0"]
@@ -74,6 +76,7 @@ theme_override_fonts/font = ExtResource("5_lakwo")
 theme_override_styles/normal = SubResource("StyleBoxFlat_5mgl0")
 horizontal_alignment = 1
 vertical_alignment = 1
+script = ExtResource("7_6fy0c")
 
 [node name="RestartButton" type="Button" parent="CanvasLayer/FinishedButtons" unique_id=79225561]
 custom_minimum_size = Vector2(200, 40)
@@ -81,7 +84,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
-text = "START"
+text = "RESTART"
+script = ExtResource("8_icr1w")
 
 [node name="ControlButtonsBackground" type="ColorRect" parent="CanvasLayer" unique_id=827763883]
 z_index = 10
@@ -106,6 +110,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
+alignment = 1
+script = ExtResource("7_6fy0c")
 
 [node name="StartButton" type="Button" parent="CanvasLayer/ControlButtons" unique_id=1102167122]
 custom_minimum_size = Vector2(200, 40)
@@ -114,6 +120,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_fonts/font = ExtResource("5_lakwo")
 text = "START"
+script = ExtResource("7_6fy0c")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=51171050]
 zoom = Vector2(2, 2)
@@ -128,3 +135,5 @@ stream = ExtResource("8_fdj2k")
 [node name="Miss" type="AudioStreamPlayer" parent="." unique_id=477252101]
 stream = ExtResource("9_fytjj")
 volume_db = -10.0
+
+[connection signal="pressed" from="CanvasLayer/FinishedButtons/RestartButton" to="CanvasLayer/FinishedButtons/RestartButton" method="_on_pressed"]
