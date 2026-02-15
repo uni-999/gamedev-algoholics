@@ -44,8 +44,8 @@ func _ready():
 	if start_button:
 		start_button.pressed.connect(_on_start_pressed)
 	
-	if restart_button:
-		restart_button.pressed.connect(_on_restart_pressed)
+#	if restart_button:
+#		restart_button.pressed.connect(_on_restart_pressed)
 	
 	if text_selector:
 		text_selector.item_selected.connect(_on_text_selected)
@@ -127,8 +127,8 @@ func _on_start_pressed():
 	
 	update_display()
 
-func _on_restart_pressed():
-	_on_start_pressed()
+#func _on_restart_pressed():
+	#_on_start_pressed()
 
 func show_road_layers():
 	if not road:

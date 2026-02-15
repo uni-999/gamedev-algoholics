@@ -51,6 +51,9 @@ func _process(delta):
 			# Emit signal for bot eating apple
 			$"..".eat_apple("top", current_index)
 			apple_eaten.emit("top", current_index - 1)
+		if current_index == get_parent().get_text_length() and current_index != 0 and !$"../..".game_completed:
+			$"../..".complete_typing()
+			
 
 func move_forward():
 	if current_index >= get_parent().get_text_length():
