@@ -44,8 +44,8 @@ func _ready():
 	if start_button:
 		start_button.pressed.connect(_on_start_pressed)
 	
-#	if restart_button:
-#		restart_button.pressed.connect(_on_restart_pressed)
+	if restart_button:
+		restart_button.pressed.connect(_on_start_pressed)
 	
 	if text_selector:
 		text_selector.item_selected.connect(_on_text_selected)
