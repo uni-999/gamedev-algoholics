@@ -1,7 +1,7 @@
 extends Control
 
 func _ready():
-	# Connect the button's pressed signal
+	
 	
 	# Set up button properties for keyboard appearance	
 	# Optional: Add theme overrides for better keyboard appearance

@@ -35,8 +35,8 @@ var sample_texts = [
 	"the quick brown fox jumps over the lazy dog",
 	"programming is the art of telling another human what one wants the computer to do",
 	"practice makes perfect but perfect practice makes perfect permanent",
-	"learning to type quickly is an essential skill in the digital age",
-	"the only way to learn a new programming language is by writing programs in it"
+	"the only way to learn a new programming language is by writing programs in it",
+	"learning to type quickly is an essential skill in the modern digital age where computers are used for almost everything from work and school to entertainment and communication with friends and family who live far away across mountains and oceans and time zones that make it difficult to coordinate schedules and find time to talk but technology helps bridge those gaps and bring people closer together despite the physical distance between them",
 ]
 
 func _ready():
@@ -53,6 +53,12 @@ func _ready():
 			text_selector.add_item("Text " + str(i + 1), i)
 		text_selector.select(0)
 		_on_text_selected(0)
+		
+		var popup = text_selector.get_popup()
+		if popup:
+			var custom_font = load("res://assets/m6x11.ttf")
+			popup.add_theme_font_override("font", custom_font)
+			popup.add_theme_font_size_override("font_size", 16)
 	
 	if virtual_keyboard and virtual_keyboard.has_signal("key_pressed"):
 		virtual_keyboard.key_pressed.connect(_on_key_pressed)
