@@ -32,6 +32,7 @@ var bot_timer: float = 0.0
 
 # Sample texts with spaces
 var sample_texts = [
+	"the icebird team is good ist are also great",
 	"the quick brown fox jumps over the lazy dog",
 	"programming is the art of telling another human what one wants the computer to do",
 	"practice makes perfect but perfect practice makes perfect permanent",
